@@ -1,0 +1,6 @@
+all:
+	gcc -o daniel main.c
+compile:
+	gcc -o daniel main.c
+run:
+	./daniel
