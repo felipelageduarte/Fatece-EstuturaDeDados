@@ -1,8 +1,41 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include "matrix.h"
+#include "jogo.h"
+
+void jogo(){
+    
+    int l = 20, 
+        c = 20;
+    int nBombas = 20;
+    int x, y;
+    int fim = 0;
+
+    CAMPO **tab = inicializacao(l, c, nBombas);
+    while(!fim){
+        system("cls || clear");
+        printTab(tab, l, c);
+        printf("Forneca as coord (x,y) do campo: ");
+        scanf("%d %d", &x, &y);
+        
+        //caso o usuario digite uma coordenada negativa
+        //saia do laco e termine o jogo
+        if(x == -1 || y == -1) break;
+
+        
+        tab = abrirCampo(tab, l, c, x, y, &fim);
+
+        if(fim){
+            printTab(tab, l, c);
+            printf("Perdeu!!!!\n");
+            sleep(2);
+        }
+    }
+    //libera memoria alocada para a matriz
+    freeMat(tab, l);
+}
 
 void printMenu(){
-	system("clear");
 	printf("\n\n\n=================================================\n\n");
 	printf("\t\t1) Iniciar o jogo\n");
 	printf("\t\t2) ???\n");
@@ -17,11 +50,13 @@ int menu(){
 	char optNum = -1;
 	
 	do{
-		//imprime o menu na tela
+        system("cls || clear");
+        //imprime o menu na tela
 		printMenu();
 
 		//le a opcao fornecida pelo usuario
 		scanf("%c", &opt);
+        system("cls || clear");
 
 		//Observe que a opcao foi lida com caracter
 		//para caso o usuario digite um valor nao
@@ -32,8 +67,8 @@ int menu(){
 		switch(opt){
 			case '1':
 				optNum = 1;
-				stopLoop = 1;
-				break;
+				jogo();    
+                break;
 			case '0':
 				optNum = 0;
 				stopLoop = 1;

@@ -1,9 +1,5 @@
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
-
-#include "matrix.h"
+#include "jogo.h"
 
 
 CAMPO **sortearBombas(CAMPO **tab, int l, int c, int numBombas){
@@ -77,7 +73,7 @@ CAMPO **dicasNumericas(CAMPO **tab, int l, int c){
     return tab; 
 }
 
-CAMPO **inicializacao(int l, int c){
+CAMPO **inicializacao(int l, int c, int nBombas){
     int i, j;
 
 
@@ -93,7 +89,7 @@ CAMPO **inicializacao(int l, int c){
     }
     
     //sortear as bombas
-    tab = sortearBombas(tab, l, c, 20);
+    tab = sortearBombas(tab, l, c, nBombas);
     
     //dicas numericas
     tab = dicasNumericas(tab, l, c);
@@ -101,15 +97,40 @@ CAMPO **inicializacao(int l, int c){
     return tab;
 }
 
-int main(int argc, char *argv[]){
-    int l = 20, c = 20;
+CAMPO **revelarMap(CAMPO **tab, int l, int c){
+    int i, j;
     
-    CAMPO **tab = inicializacao(l, c);
+    for(i = 0; i < l; ++i){
+        for(j = 0; j < c; ++j){
+            tab[i][j].aberto = 1;
+        }
+    }
+    return tab;
+}
 
-    printTab(tab, l, c);
+CAMPO **abrirCampo(CAMPO **tab, int l, int c, int x, int y, int *perdeu){
     
-    //libera memoria alocada para a matriz
-    freeMat(tab, l);
-    
-    return 0;
+    //este cenario as coordenadas fornecidas estao fora
+    //do tabuleiro
+    if(x < 0 || x >= l || y < 0 || y >= c || tab[y][x].aberto == 1){
+        return tab;
+    }
+
+
+    if(tab[y][x].type == -1){
+        tab = revelarMap(tab, l, c);
+        (*perdeu) = 1;
+    } else if(tab[y][x].type == 0){
+        tab[y][x].aberto = 1;
+        int i, j;
+        for(i = y - 1; i <= y + 1; ++i){
+            for(j = x - 1; j <= x +1; ++j){
+                tab = abrirCampo(tab, l, c, j, i, perdeu);
+            }
+        }
+    } else {
+        tab[y][x].aberto = 1;
+    }
+
+    return tab;
 }
