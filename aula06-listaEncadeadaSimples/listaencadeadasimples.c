@@ -1,4 +1,4 @@
-#include "listaEncadeadaSimples.h"
+#include "listaencadeadasimples.h"
 
 NODE *newNode(OBJECT *obj){
 	NODE *node = (NODE *)malloc(sizeof(NODE));
